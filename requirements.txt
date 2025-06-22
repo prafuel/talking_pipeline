@@ -3,3 +3,4 @@ librosa==0.11.0
 torchaudio==2.7.1
 WhisperSpeech==0.8.9
 webdataset==1.0.2
+faster-whisper==1.1.1

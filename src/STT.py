@@ -1,6 +1,7 @@
 import os
 import librosa
 import whisper
+from faster_whisper import WhisperModel
 
 from config import config
 from src.logger import get_logger
@@ -29,4 +30,26 @@ def STT_whisper(audio_file_path: str) -> str:
     
     except Exception as e:
         logger.error(f"Error in STT generation: {str(e)}")
+        raise
+
+def STT_fasterwhisper(audio_file_path: str) -> str:
+    try:
+        model = WhisperModel("medium")
+        segments, info = model.transcribe(audio_file_path)
+
+        text = ""
+        for segment in segments:
+            text = text + segment.text
+            print("[%.2fs -> %.2fs] %s" % (segment.start, segment.end, segment.text))
+
+        output_file = f"{config.OUTPUT_FOLDER}/transcript_{audio_file_path}.txt"
+
+        with open(output_file, "w") as f:
+            f.write(text.strip())
+
+        logger.info(f"Transcript file path :  [{output_file}]")
+
+        return text
+    except Exception as e:
+        logger.error(f"error in STT {e}")
         raise
